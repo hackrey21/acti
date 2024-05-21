@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subir imágenes y extraer números del nombre</title>
+  </head>
+  <body>
+    <input type="file" id="fileInput" accept="image/*" multiple />
+    <div id="imageNames"></div>
+    <script>
+      document
+        .getElementById("fileInput")
+        .addEventListener("change", handleFileSelect, false);
+
+      function handleFileSelect(event) {
+        const files = event.target.files;
+        const imageNamesDiv = document.getElementById("imageNames");
+        imageNamesDiv.innerHTML = "";
+
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const reader = new FileReader();
+
+          reader.onload = function (event) {
+            const image = new Image();
+            image.src = event.target.result;
+            image.style.maxWidth = "200px";
+            image.style.marginRight = "10px";
+            imageNamesDiv.appendChild(image);
+
+            const fileName = file.name;
+            const numbers = fileName.match(/\d+/g);
+            console.log(fileName.match(/\d+/g));
+            if (numbers) {
+              const numberString = numbers[0];
+              const numberElement = document.createElement("p");
+              numberElement.textContent = `Números de active imagen: ${numberString}`;
+              imageNamesDiv.appendChild(numberElement);
+            } else {
+              const noNumberElement = document.createElement("p");
+              noNumberElement.textContent =
+                "No se encontraron números en el nombre de la imagen.";
+              imageNamesDiv.appendChild(noNumberElement);
+            }
+          };
+
+          reader.readAsDataURL(file);
+        }
+      }
+    </script>
+  </body>
+</html>
